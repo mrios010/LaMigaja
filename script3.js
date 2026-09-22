@@ -267,7 +267,7 @@ function mostrarResumen() {
     ) {
 
         // Costo de envío simulado.
-        costoEnvio = 50;
+        costoEnvio = 10;
 
     }
 
