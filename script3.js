@@ -59,7 +59,6 @@ const imagenesProductos = {
 
     "Pan de higo":
         "https://comedera.com/wp-content/uploads/sites/9/2022/04/pan-de-higo.jpg"
-
 };
 
 
@@ -94,7 +93,7 @@ function formatoMoneda(cantidad) {
 
 
 // =====================================================
-// MOSTRAR RESUMEN
+// MOSTRAR RESUMEN DEL CARRITO
 // =====================================================
 
 function mostrarResumen() {
@@ -122,7 +121,6 @@ function mostrarResumen() {
     if (carrito.length === 0) {
 
         resumen.innerHTML = `
-
             <div class="alert alert-warning">
 
                 Tu carrito está vacío.
@@ -132,7 +130,6 @@ function mostrarResumen() {
                 Regresa al catálogo para agregar productos.
 
             </div>
-
         `;
 
         subtotalElemento.textContent =
@@ -149,25 +146,24 @@ function mostrarResumen() {
     }
 
 
-    // Variable para almacenar el subtotal.
-    let subtotal = 0;
+    // Subtotal de los productos.
+    let subtotalGeneral = 0;
 
 
-    // Recorremos todos los productos.
-    carrito.forEach(function(producto) {
+    // Recorremos los productos.
+    carrito.forEach(function(producto, indice) {
 
-        // Calculamos el subtotal del producto.
         const subtotalProducto =
             producto.precio * producto.cantidad;
 
 
-        subtotal += subtotalProducto;
+        subtotalGeneral += subtotalProducto;
 
 
-        // Buscamos la imagen correspondiente.
+        // Imagen del producto.
         const imagen =
-            imagenesProductos[producto.nombre]
-            || "https://static.vecteezy.com/system/resources/previews/017/625/331/non_2x/bread-icon-simple-style-bread-company-big-sale-poster-background-symbol-bread-brand-logo-design-element-bread-t-shirt-printing-bread-for-sticker-vector.jpg";
+            imagenesProductos[producto.nombre] ||
+            "https://cdn-icons-png.flaticon.com/512/992/992661.png";
 
 
         // Creamos el elemento.
@@ -176,85 +172,217 @@ function mostrarResumen() {
 
 
         elemento.className =
-            "producto-resumen border-bottom pb-3 mb-3";
+            "producto-carrito";
 
 
-        // Información del producto.
         elemento.innerHTML = `
 
-            <div class="d-flex align-items-center gap-3">
+            <img
+                src="${imagen}"
+                alt="${producto.nombre}"
+                class="imagen-producto-pedido"
+            >
 
-                <!-- Imagen -->
+            <div class="info-producto">
 
-                <img
-                    src="${imagen}"
-                    alt="${producto.nombre}"
-                    class="imagen-producto-pedido"
-                >
+                <h3 class="h6 mb-1">
+                    ${producto.nombre}
+                </h3>
+
+                <p class="precio-unitario">
+                    ${formatoMoneda(producto.precio)} c/u
+                </p>
 
 
-                <!-- Información -->
+                <div class="controles-cantidad">
 
-                <div class="flex-grow-1">
+                    <button
+                        type="button"
+                        class="btn-cantidad"
+                        onclick="disminuirCantidad(${indice})"
+                        aria-label="Disminuir cantidad"
+                    >
+                        −
+                    </button>
 
-                    <h3 class="h6 mb-1">
-                        ${producto.nombre}
-                    </h3>
 
-                    <p class="mb-1 text-muted">
-                        Cantidad: ${producto.cantidad}
-                    </p>
+                    <span class="cantidad-producto">
+                        ${producto.cantidad}
+                    </span>
 
-                    <p class="mb-0 text-muted">
-                        Precio:
-                        ${formatoMoneda(producto.precio)}
-                    </p>
+
+                    <button
+                        type="button"
+                        class="btn-cantidad"
+                        onclick="aumentarCantidad(${indice})"
+                        aria-label="Aumentar cantidad"
+                    >
+                        +
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="btn-eliminar"
+                        onclick="eliminarProducto(${indice})"
+                        aria-label="Eliminar producto"
+                        title="Eliminar producto"
+                    >
+                        🗑️
+                    </button>
 
                 </div>
 
+            </div>
 
-                <!-- Subtotal -->
 
-                <span class="fw-bold text-nowrap">
+            <div class="precio-producto">
 
-                    ${formatoMoneda(subtotalProducto)}
-
-                </span>
+                ${formatoMoneda(subtotalProducto)}
 
             </div>
 
         `;
 
 
-        // Agregamos el producto.
         resumen.appendChild(elemento);
 
     });
 
 
-    // Costo de envío.
-    const envio =
-        document.getElementById("envio").checked
-            ? 50
-            : 0;
+    // =====================================================
+    // CALCULAR ENVÍO
+    // =====================================================
+
+    const envioSeleccionado =
+        document.getElementById("envio");
 
 
-    // Total.
-    const total =
-        subtotal + envio;
+    let costoEnvio = 0;
 
 
-    // Mostrar cantidades.
+    if (
+        envioSeleccionado &&
+        envioSeleccionado.checked
+    ) {
+
+        // Costo de envío simulado.
+        costoEnvio = 50;
+
+    }
+
+
+    // =====================================================
+    // MOSTRAR TOTALES
+    // =====================================================
+
     subtotalElemento.textContent =
-        formatoMoneda(subtotal);
+        formatoMoneda(subtotalGeneral);
+
 
     envioElemento.textContent =
-        envio === 0
-            ? "Gratis"
-            : formatoMoneda(envio);
+        formatoMoneda(costoEnvio);
+
 
     totalElemento.textContent =
-        formatoMoneda(total);
+        formatoMoneda(
+            subtotalGeneral + costoEnvio
+        );
+
+}
+
+
+// =====================================================
+// AUMENTAR CANTIDAD
+// =====================================================
+
+function aumentarCantidad(indice) {
+
+    const carrito =
+        obtenerCarrito();
+
+
+    if (!carrito[indice]) {
+        return;
+    }
+
+
+    carrito[indice].cantidad++;
+
+
+    localStorage.setItem(
+        CLAVE_CARRITO,
+        JSON.stringify(carrito)
+    );
+
+
+    mostrarResumen();
+
+}
+
+
+// =====================================================
+// DISMINUIR CANTIDAD
+// =====================================================
+
+function disminuirCantidad(indice) {
+
+    const carrito =
+        obtenerCarrito();
+
+
+    if (!carrito[indice]) {
+        return;
+    }
+
+
+    carrito[indice].cantidad--;
+
+
+    // Si llega a cero, eliminamos el producto.
+    if (carrito[indice].cantidad <= 0) {
+
+        carrito.splice(indice, 1);
+
+    }
+
+
+    localStorage.setItem(
+        CLAVE_CARRITO,
+        JSON.stringify(carrito)
+    );
+
+
+    mostrarResumen();
+
+}
+
+
+// =====================================================
+// ELIMINAR PRODUCTO
+// =====================================================
+
+function eliminarProducto(indice) {
+
+    const carrito =
+        obtenerCarrito();
+
+
+    if (!carrito[indice]) {
+        return;
+    }
+
+
+    carrito.splice(indice, 1);
+
+
+    localStorage.setItem(
+        CLAVE_CARRITO,
+        JSON.stringify(carrito)
+    );
+
+
+    mostrarResumen();
 
 }
 
@@ -268,84 +396,74 @@ function actualizarTipoEntrega() {
     const envio =
         document.getElementById("envio");
 
-    const recogida =
-        document.getElementById("recogida");
-
     const datosDireccion =
         document.getElementById("datosDireccion");
-
-    const sucursal =
-        document.getElementById("sucursal");
 
     const contenedorSucursal =
         document.getElementById("contenedorSucursal");
 
 
-    // Campos de dirección.
-    const calle =
-        document.getElementById("calle");
-
-    const numero =
-        document.getElementById("numero");
-
-    const colonia =
-        document.getElementById("colonia");
-
-    const codigoPostal =
-        document.getElementById("codigoPostal");
-
-    const municipio =
-        document.getElementById("municipio");
-
-
-    // Si selecciona envío.
+    // Si es envío.
     if (envio.checked) {
 
-        datosDireccion.style.display = "block";
+        datosDireccion.style.display =
+            "block";
 
-        contenedorSucursal.style.display = "none";
-
-        calle.required = true;
-        numero.required = true;
-        colonia.required = true;
-        codigoPostal.required = true;
-        municipio.required = true;
-
-        sucursal.required = false;
-
-    }
+        contenedorSucursal.style.display =
+            "none";
 
 
-    // Si selecciona recogida.
-    else if (recogida.checked) {
+        // Hacer obligatorios los campos de dirección.
+        document
+            .querySelectorAll(
+                "#datosDireccion input"
+            )
+            .forEach(function(campo) {
 
-        datosDireccion.style.display = "none";
+                campo.required = true;
 
-        contenedorSucursal.style.display = "block";
-
-        calle.required = false;
-        numero.required = false;
-        colonia.required = false;
-        codigoPostal.required = false;
-        municipio.required = false;
-
-        sucursal.required = true;
+            });
 
     }
 
 
-    // Actualizamos el resumen.
+    // Si es recogida.
+    else {
+
+        datosDireccion.style.display =
+            "none";
+
+        contenedorSucursal.style.display =
+            "block";
+
+
+        // La dirección deja de ser obligatoria.
+        document
+            .querySelectorAll(
+                "#datosDireccion input"
+            )
+            .forEach(function(campo) {
+
+                campo.required = false;
+
+            });
+
+    }
+
+
+    // Actualizamos el resumen porque
+    // el costo de envío puede cambiar.
     mostrarResumen();
 
 
-    // Actualizamos mensaje de pago.
+    // Actualizamos el mensaje de pago.
     actualizarMensajePago();
 
 }
 
 
 // =====================================================
-// MENSAJE DE PAGO
+// MENSAJE DEL MÉTODO DE PAGO
 // =====================================================
 
 function actualizarMensajePago() {
@@ -353,44 +471,33 @@ function actualizarMensajePago() {
     const envio =
         document.getElementById("envio");
 
+    const efectivo =
+        document.getElementById("efectivo");
+
     const mensajePago =
         document.getElementById("mensajePago");
 
 
-    const pagoSeleccionado =
-        document.querySelector(
-            'input[name="pago"]:checked'
-        );
-
-
-    if (!pagoSeleccionado) {
-        return;
-    }
-
-
-    if (
-        envio.checked &&
-        pagoSeleccionado.value === "Efectivo"
-    ) {
+    if (envio.checked && efectivo.checked) {
 
         mensajePago.textContent =
-            "Puedes pagar en efectivo directamente al repartidor al recibir tu pedido.";
+            "Puedes pagar en efectivo directamente al repartidor.";
 
     }
 
     else if (
         envio.checked &&
-        pagoSeleccionado.value === "Terminal"
+        !efectivo.checked
     ) {
 
         mensajePago.textContent =
-            "El repartidor llevará una terminal para realizar el pago al momento de la entrega.";
+            "El repartidor llevará una terminal para realizar el pago.";
 
     }
 
     else if (
         !envio.checked &&
-        pagoSeleccionado.value === "Efectivo"
+        efectivo.checked
     ) {
 
         mensajePago.textContent =
@@ -401,7 +508,7 @@ function actualizarMensajePago() {
     else {
 
         mensajePago.textContent =
-            "Puedes realizar el pago con terminal al recoger tu pedido.";
+            "Puedes pagar con terminal al recoger tu pedido en la sucursal.";
 
     }
 
@@ -414,7 +521,6 @@ function actualizarMensajePago() {
 
 function confirmarPedido(evento) {
 
-    // Evita que la página se recargue.
     evento.preventDefault();
 
 
@@ -462,7 +568,7 @@ function confirmarPedido(evento) {
     }
 
 
-    // Obtenemos algunos datos.
+    // Datos básicos.
     const nombre =
         document.getElementById("nombre").value;
 
@@ -477,14 +583,33 @@ function confirmarPedido(evento) {
         ).value;
 
 
-    // Obtenemos sucursal.
-    let informacionEntrega = entrega;
+    // =====================================================
+    // INFORMACIÓN DE ENTREGA
+    // =====================================================
+
+    let informacionEntrega = "";
 
 
     if (entrega === "Envío") {
 
+        const calle =
+            document.getElementById("calle").value;
+
+        const numero =
+            document.getElementById("numero").value;
+
+        const colonia =
+            document.getElementById("colonia").value;
+
+        const codigoPostal =
+            document.getElementById("codigoPostal").value;
+
+        const municipio =
+            document.getElementById("municipio").value;
+
+
         informacionEntrega =
-            "Envío a domicilio";
+            `Dirección de entrega: ${calle} ${numero}, ${colonia}, C.P. ${codigoPostal}, ${municipio}.`;
 
     }
 
@@ -494,12 +619,15 @@ function confirmarPedido(evento) {
             document.getElementById("sucursal").value;
 
         informacionEntrega =
-            "Recogida en " + sucursal;
+            `Sucursal seleccionada: ${sucursal}.`;
 
     }
 
 
-    // Mostramos mensaje de confirmación.
+    // =====================================================
+    // MENSAJE DE CONFIRMACIÓN
+    // =====================================================
+
     mensaje.innerHTML = `
 
         <div class="alert alert-success">
@@ -508,46 +636,56 @@ function confirmarPedido(evento) {
                 ¡Pedido confirmado!
             </h2>
 
-            <p class="mb-1">
+            <p class="mb-2">
                 Gracias, ${nombre}.
+                Tu pedido fue registrado correctamente.
             </p>
 
             <p class="mb-1">
-                ${informacionEntrega}
+                <strong>Entrega:</strong>
+                ${entrega}
+            </p>
+
+            <p class="mb-1">
+                <strong>Pago:</strong>
+                ${pago}
             </p>
 
             <p class="mb-0">
-                Forma de pago: ${pago}.
+                ${informacionEntrega}
             </p>
 
             <hr>
 
-            <p class="mb-0">
-                Tu pedido fue registrado correctamente.
+            <small>
                 Esta página simula el proceso de compra
                 y no realiza ningún cobro real.
-            </p>
+            </small>
 
         </div>
 
     `;
 
 
-    // Limpiamos el carrito.
+    // =====================================================
+    // LIMPIAR CARRITO
+    // =====================================================
+
     localStorage.removeItem(
         CLAVE_CARRITO
     );
 
 
-    // Limpiamos el formulario.
+    // Limpiar formulario.
     formulario.reset();
 
 
-    // Volvemos a seleccionar "Envío".
-    document.getElementById("envio").checked = true;
+    // Volver a seleccionar envío.
+    document.getElementById("envio").checked =
+        true;
 
 
-    // Actualizamos la interfaz.
+    // Actualizar interfaz.
     actualizarTipoEntrega();
 
     actualizarMensajePago();
@@ -555,7 +693,7 @@ function confirmarPedido(evento) {
     mostrarResumen();
 
 
-    // Regresamos al inicio de la página.
+    // Regresar al inicio.
     window.scrollTo({
 
         top: 0,
@@ -575,7 +713,8 @@ document.addEventListener(
     "DOMContentLoaded",
     function() {
 
-        // Mostrar productos.
+
+        // Mostrar carrito.
         mostrarResumen();
 
 
@@ -598,7 +737,7 @@ document.addEventListener(
             });
 
 
-        // Detectar cambios en forma de pago.
+        // Detectar cambios en el método de pago.
         document
             .querySelectorAll(
                 'input[name="pago"]'
@@ -613,7 +752,7 @@ document.addEventListener(
             });
 
 
-        // Detectar el envío del formulario.
+        // Detectar envío del formulario.
         document
             .getElementById("formPedido")
             .addEventListener(
@@ -621,6 +760,6 @@ document.addEventListener(
                 confirmarPedido
             );
 
+
     }
 );
-
