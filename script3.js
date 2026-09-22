@@ -1,347 +1,110 @@
-javascript
-// =====================================================
-// CARRITO DE LA MIGaja
-// =====================================================
+// =========================================================
+// LA MIGAJA - HOJA 3: PEDIDOS
+// =========================================================
 
-// Esta es la misma clave utilizada en la Hoja 2.
 const CLAVE_CARRITO = "carritoLaMigaja";
 
+document.addEventListener("DOMContentLoaded", () => {
+    cargarTablaPedido();
+});
 
-// =====================================================
-// OBTENER CARRITO
-// =====================================================
-
-// Obtiene los productos guardados en localStorage.
 function obtenerCarrito() {
-
-    return JSON.parse(
-        localStorage.getItem(CLAVE_CARRITO)
-    ) || [];
-
+    const carritoGuardado = localStorage.getItem(CLAVE_CARRITO);
+    return carritoGuardado ? JSON.parse(carritoGuardado) : [];
 }
 
+function guardarCarrito(carrito) {
+    localStorage.setItem(CLAVE_CARRITO, JSON.stringify(carrito));
+}
 
-// =====================================================
-// FORMATO DE MONEDA
-// =====================================================
+function cargarTablaPedido() {
+    const carrito = obtenerCarrito();
+    const tabla = document.getElementById("tablaPedido");
+    const totalElem = document.getElementById("totalPedido");
 
-// Convierte los precios al formato de moneda mexicana.
-function formatoMoneda(cantidad) {
+    if (!tabla) return;
 
-    return cantidad.toLocaleString("es-MX", {
+    tabla.innerHTML = "";
+    let totalGeneral = 0;
 
-        style: "currency",
+    if (carrito.length === 0) {
+        tabla.innerHTML = `
+            <tr>
+                <td colspan="5" class="text-center py-4 text-muted">
+                    No has agregado productos a tu carrito. 
+                    <a href="catalogo.html">Ver catálogo</a>
+                </td>
+            </tr>`;
+        if (totalElem) totalElem.textContent = "0.00";
+        return;
+    }
 
-        currency: "MXN"
+    carrito.forEach((prod, index) => {
+        const subtotal = prod.precio * prod.cantidad;
+        totalGeneral += subtotal;
 
+        const fila = document.createElement("tr");
+        fila.innerHTML = `
+            <td><strong>${prod.nombre}</strong><br><small class="text-muted">${prod.categoria}</small></td>
+            <td>$${prod.precio.toFixed(2)}</td>
+            <td>
+                <div class="d-flex align-items-center gap-2">
+                    <button class="btn btn-sm btn-outline-secondary" onclick="cambiarCantidad(${index}, -1)">-</button>
+                    <span>${prod.cantidad}</span>
+                    <button class="btn btn-sm btn-outline-secondary" onclick="cambiarCantidad(${index}, 1)">+</button>
+                </div>
+            </td>
+            <td>$${subtotal.toFixed(2)}</td>
+            <td>
+                <button class="btn btn-sm btn-danger" onclick="eliminarProducto(${index})">Eliminar</button>
+            </td>
+        `;
+        tabla.appendChild(fila);
     });
 
+    if (totalElem) {
+        totalElem.textContent = totalGeneral.toFixed(2);
+    }
 }
 
+function cambiarCantidad(index, cambio) {
+    let carrito = obtenerCarrito();
+    if (carrito[index]) {
+        carrito[index].cantidad += cambio;
+        if (carrito[index].cantidad <= 0) {
+            carrito.splice(index, 1);
+        }
+        guardarCarrito(carrito);
+        cargarTablaPedido();
+    }
+}
 
-// =====================================================
-// MOSTRAR RESUMEN
-// =====================================================
+function eliminarProducto(index) {
+    let carrito = obtenerCarrito();
+    carrito.splice(index, 1);
+    guardarCarrito(carrito);
+    cargarTablaPedido();
+}
 
-// Muestra los productos que fueron agregados desde el catálogo.
-function mostrarResumen() {
+function vaciarCarrito() {
+    if (confirm("¿Estás seguro de que deseas vaciar tu carrito?")) {
+        localStorage.removeItem(CLAVE_CARRITO);
+        cargarTablaPedido();
+    }
+}
 
+function confirmarPedido(e) {
+    e.preventDefault();
     const carrito = obtenerCarrito();
 
-    const resumen =
-        document.getElementById("resumenCarrito");
-
-    const totalElemento =
-        document.getElementById("totalPedido");
-
-
-    // Limpiamos el contenido anterior.
-    resumen.innerHTML = "";
-
-
-    // Si no hay productos.
     if (carrito.length === 0) {
-
-        resumen.innerHTML = `
-            <div class="alert alert-warning">
-
-                Tu carrito está vacío.
-
-                Regresa al catálogo para agregar productos.
-
-            </div>
-        `;
-
-        totalElemento.textContent =
-            formatoMoneda(0);
-
+        alert("Tu carrito está vacío. Agrega productos antes de confirmar.");
         return;
-
     }
 
-
-    // Variable para almacenar el total.
-    let total = 0;
-
-
-    // Recorremos todos los productos.
-    carrito.forEach(function(producto) {
-
-
-        // Calculamos el subtotal.
-        const subtotal =
-            producto.precio * producto.cantidad;
-
-
-        // Sumamos el subtotal al total.
-        total += subtotal;
-
-
-        // Creamos un elemento para el producto.
-        const elemento =
-            document.createElement("div");
-
-
-        elemento.className =
-            "border-bottom pb-3 mb-3";
-
-
-        // Información que aparecerá en pantalla.
-        elemento.innerHTML = `
-
-            <div class="d-flex justify-content-between gap-3">
-
-                <div>
-
-                    <h3 class="h6 mb-1">
-                        ${producto.nombre}
-                    </h3>
-
-                    <p class="mb-1 text-muted">
-                        Cantidad: ${producto.cantidad}
-                    </p>
-
-                    <p class="mb-0 text-muted">
-                        Precio:
-                        ${formatoMoneda(producto.precio)}
-                    </p>
-
-                </div>
-
-
-                <span class="fw-bold">
-
-                    ${formatoMoneda(subtotal)}
-
-                </span>
-
-            </div>
-
-        `;
-
-
-        // Agregamos el producto al resumen.
-        resumen.appendChild(elemento);
-
-    });
-
-
-    // Mostramos el total.
-    totalElemento.textContent =
-        formatoMoneda(total);
-
+    const nombre = document.getElementById("nombreCliente").value;
+    alert(`¡Gracias por tu compra, ${nombre}! Tu pedido ha sido registrado con éxito.`);
+    
+    localStorage.removeItem(CLAVE_CARRITO);
+    window.location.href = "index.html";
 }
-
-
-// =====================================================
-// TIPO DE ENTREGA
-// =====================================================
-
-// Cambia la obligatoriedad de la dirección.
-function actualizarTipoEntrega() {
-
-    const envio =
-        document.getElementById("envio");
-
-    const direccion =
-        document.getElementById("direccion");
-
-    const textoDireccion =
-        document.getElementById("textoDireccion");
-
-
-    // Si el usuario seleccionó envío.
-    if (envio.checked) {
-
-        direccion.required = true;
-
-        textoDireccion.textContent =
-            "La dirección es necesaria para pedidos con envío.";
-
-    }
-
-
-    // Si el usuario seleccionó recogida.
-    else {
-
-        direccion.required = false;
-
-        textoDireccion.textContent =
-            "Para recoger en sucursal, la dirección no es obligatoria.";
-
-    }
-
-}
-
-
-// =====================================================
-// CONFIRMAR PEDIDO
-// =====================================================
-
-// Valida el formulario y simula la confirmación.
-function confirmarPedido(evento) {
-
-    // Evita que la página se recargue.
-    evento.preventDefault();
-
-
-    const formulario =
-        document.getElementById("formPedido");
-
-    const carrito =
-        obtenerCarrito();
-
-    const mensaje =
-        document.getElementById("mensajePedido");
-
-
-    // Verificamos que haya productos.
-    if (carrito.length === 0) {
-
-        mensaje.innerHTML = `
-
-            <div class="alert alert-warning">
-
-                No puedes confirmar un pedido vacío.
-
-                Agrega productos desde el catálogo.
-
-            </div>
-
-        `;
-
-        return;
-
-    }
-
-
-    // Verificamos los campos obligatorios.
-    if (!formulario.checkValidity()) {
-
-        formulario.classList.add(
-            "was-validated"
-        );
-
-        return;
-
-    }
-
-
-    // Mostramos mensaje de confirmación.
-    mensaje.innerHTML = `
-
-        <div class="alert alert-success">
-
-            <h2 class="h5">
-                ¡Pedido confirmado!
-            </h2>
-
-            <p class="mb-0">
-
-                Tu pedido fue registrado correctamente.
-
-                Esta página simula el proceso de compra
-                y no realiza ningún cobro real.
-
-            </p>
-
-        </div>
-
-    `;
-
-
-    // Limpiamos el carrito.
-    localStorage.removeItem(
-        CLAVE_CARRITO
-    );
-
-
-    // Limpiamos el formulario.
-    formulario.reset();
-
-
-    // Volvemos a seleccionar "Envío".
-    document.getElementById("envio").checked = true;
-
-
-    // Actualizamos la interfaz.
-    actualizarTipoEntrega();
-
-    mostrarResumen();
-
-
-    // Regresamos al inicio de la página.
-    window.scrollTo({
-
-        top: 0,
-
-        behavior: "smooth"
-
-    });
-
-}
-
-
-// =====================================================
-// INICIO DEL PROGRAMA
-// =====================================================
-
-// Ejecuta estas funciones cuando carga la página.
-document.addEventListener(
-    "DOMContentLoaded",
-    function() {
-
-
-        // Mostrar productos.
-        mostrarResumen();
-
-
-        // Revisar tipo de entrega.
-        actualizarTipoEntrega();
-
-
-        // Detectar cambios entre envío y recogida.
-        document
-            .querySelectorAll(
-                'input[name="entrega"]'
-            )
-            .forEach(function(radio) {
-
-                radio.addEventListener(
-                    "change",
-                    actualizarTipoEntrega
-                );
-
-            });
-
-
-        // Detectar el envío del formulario.
-        document
-            .getElementById("formPedido")
-            .addEventListener(
-                "submit",
-                confirmarPedido
-            );
-
-    }
-);
