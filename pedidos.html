@@ -4,7 +4,6 @@
 <head>
     <meta charset="UTF-8">
 
-    <!-- Hace que la página sea adaptable a celulares -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>La Migaja | Pedidos</title>
@@ -38,6 +37,7 @@
 
                 </a>
 
+
                 <!-- Botón para celulares -->
                 <button class="navbar-toggler"
                         type="button"
@@ -50,6 +50,7 @@
                     <span class="navbar-toggler-icon"></span>
 
                 </button>
+
 
                 <!-- Menú -->
                 <div class="collapse navbar-collapse" id="menuPrincipal">
@@ -93,7 +94,7 @@
         <section class="text-center mb-5">
 
             <h1>
-                ¡Finalizemos tu pedido!
+                ¡Finalicemos tu pedido!
             </h1>
 
             <p class="lead">
@@ -103,7 +104,7 @@
         </section>
 
 
-        <!-- Aquí aparecerán los mensajes de confirmación -->
+        <!-- Mensajes -->
         <div id="mensajePedido" class="mb-4"></div>
 
 
@@ -140,6 +141,7 @@
                                     <input type="text"
                                            class="form-control"
                                            id="nombre"
+                                           placeholder="Ingresa tu nombre"
                                            required>
 
                                 </div>
@@ -155,6 +157,7 @@
                                     <input type="text"
                                            class="form-control"
                                            id="apellidos"
+                                           placeholder="Ingresa tus apellidos"
                                            required>
 
                                 </div>
@@ -164,7 +167,7 @@
                                 <div class="col-md-6">
 
                                     <label for="telefono" class="form-label">
-                                        Teléfono
+                                        Número de teléfono
                                     </label>
 
                                     <input type="tel"
@@ -178,16 +181,184 @@
                                 </div>
 
 
-                                <!-- Sucursal -->
+                                <!-- Correo -->
                                 <div class="col-md-6">
 
+                                    <label for="correo" class="form-label">
+                                        Correo electrónico
+                                    </label>
+
+                                    <input type="email"
+                                           class="form-control"
+                                           id="correo"
+                                           placeholder="ejemplo@correo.com"
+                                           required>
+
+                                </div>
+
+
+                                <!-- Tipo de entrega -->
+                                <div class="col-12">
+
+                                    <h3 class="h5 mt-3">
+                                        Tipo de entrega
+                                    </h3>
+
+                                    <div class="form-check">
+
+                                        <input class="form-check-input"
+                                               type="radio"
+                                               name="entrega"
+                                               id="envio"
+                                               value="Envío"
+                                               checked>
+
+                                        <label class="form-check-label"
+                                               for="envio">
+
+                                            Envío a domicilio
+
+                                        </label>
+
+                                    </div>
+
+
+                                    <div class="form-check">
+
+                                        <input class="form-check-input"
+                                               type="radio"
+                                               name="entrega"
+                                               id="recogida"
+                                               value="Recogida en sucursal">
+
+                                        <label class="form-check-label"
+                                               for="recogida">
+
+                                            Recogida en sucursal
+
+                                        </label>
+
+                                    </div>
+
+                                </div>
+
+
+                                <!-- ==================== DIRECCIÓN ==================== -->
+
+                                <div id="datosDireccion">
+
+                                    <div class="row g-3">
+
+                                        <!-- Calle -->
+                                        <div class="col-md-8">
+
+                                            <label for="calle" class="form-label">
+                                                Calle
+                                            </label>
+
+                                            <input type="text"
+                                                   class="form-control"
+                                                   id="calle"
+                                                   placeholder="Nombre de la calle">
+
+                                        </div>
+
+
+                                        <!-- Número -->
+                                        <div class="col-md-4">
+
+                                            <label for="numero" class="form-label">
+                                                Número
+                                            </label>
+
+                                            <input type="text"
+                                                   class="form-control"
+                                                   id="numero"
+                                                   placeholder="Número">
+
+                                        </div>
+
+
+                                        <!-- Colonia -->
+                                        <div class="col-md-6">
+
+                                            <label for="colonia" class="form-label">
+                                                Colonia
+                                            </label>
+
+                                            <input type="text"
+                                                   class="form-control"
+                                                   id="colonia"
+                                                   placeholder="Colonia">
+
+                                        </div>
+
+
+                                        <!-- Código postal -->
+                                        <div class="col-md-6">
+
+                                            <label for="codigoPostal" class="form-label">
+                                                Código postal
+                                            </label>
+
+                                            <input type="text"
+                                                   class="form-control"
+                                                   id="codigoPostal"
+                                                   pattern="[0-9]{5}"
+                                                   maxlength="5"
+                                                   placeholder="5 dígitos">
+
+                                        </div>
+
+
+                                        <!-- Municipio -->
+                                        <div class="col-md-6">
+
+                                            <label for="municipio" class="form-label">
+                                                Municipio
+                                            </label>
+
+                                            <input type="text"
+                                                   class="form-control"
+                                                   id="municipio"
+                                                   placeholder="Municipio">
+
+                                        </div>
+
+
+                                        <!-- Referencias -->
+                                        <div class="col-md-6">
+
+                                            <label for="referencias" class="form-label">
+                                                Referencias
+                                            </label>
+
+                                            <input type="text"
+                                                   class="form-control"
+                                                   id="referencias"
+                                                   placeholder="Ej. casa color blanco">
+
+                                        </div>
+
+                                    </div>
+
+                                    <div class="form-text mt-2">
+                                        Estos datos son necesarios para realizar el envío.
+                                    </div>
+
+                                </div>
+
+
+                                <!-- ==================== SUCURSAL ==================== -->
+
+                                <div class="col-12" id="contenedorSucursal">
+
                                     <label for="sucursal" class="form-label">
-                                        Sucursal
+                                        Sucursal para recogida
                                     </label>
 
                                     <select class="form-select"
-                                            id="sucursal"
-                                            required>
+                                            id="sucursal">
 
                                         <option value="">
                                             Selecciona una sucursal
@@ -210,83 +381,14 @@
                                 </div>
 
 
-                                <!-- Dirección -->
-                                <div class="col-12">
+                                <!-- ==================== PAGO ==================== -->
 
-                                    <label for="direccion" class="form-label">
-                                        Dirección
-                                    </label>
-
-                                    <textarea class="form-control"
-                                              id="direccion"
-                                              rows="3"
-                                              placeholder="Calle, número, colonia, municipio y referencias"></textarea>
-
-                                    <div class="form-text" id="textoDireccion">
-                                        La dirección es necesaria para pedidos con envío.
-                                    </div>
-
-                                </div>
-
-
-                                <!-- Tipo de entrega -->
-                                <div class="col-12">
-
-                                    <h3 class="h5 mt-3">
-                                        Tipo de entrega
-                                    </h3>
-
-
-                                    <!-- Envío -->
-                                    <div class="form-check">
-
-                                        <input class="form-check-input"
-                                               type="radio"
-                                               name="entrega"
-                                               id="envio"
-                                               value="Envío"
-                                               checked>
-
-                                        <label class="form-check-label"
-                                               for="envio">
-
-                                            Envío
-
-                                        </label>
-
-                                    </div>
-
-
-                                    <!-- Recogida -->
-                                    <div class="form-check">
-
-                                        <input class="form-check-input"
-                                               type="radio"
-                                               name="entrega"
-                                               id="recogida"
-                                               value="Recogida en sucursal">
-
-                                        <label class="form-check-label"
-                                               for="recogida">
-
-                                            Recogida en sucursal
-
-                                        </label>
-
-                                    </div>
-
-                                </div>
-
-
-                                <!-- Forma de pago -->
                                 <div class="col-12">
 
                                     <h3 class="h5 mt-3">
                                         Forma de pago
                                     </h3>
 
-
-                                    <!-- Efectivo -->
                                     <div class="form-check">
 
                                         <input class="form-check-input"
@@ -306,7 +408,6 @@
                                     </div>
 
 
-                                    <!-- Terminal -->
                                     <div class="form-check">
 
                                         <input class="form-check-input"
@@ -323,6 +424,23 @@
                                         </label>
 
                                     </div>
+
+                                    <div id="mensajePago" class="form-text mt-2"></div>
+
+                                </div>
+
+
+                                <!-- Comentarios -->
+                                <div class="col-12">
+
+                                    <label for="comentarios" class="form-label">
+                                        Comentarios adicionales
+                                    </label>
+
+                                    <textarea class="form-control"
+                                              id="comentarios"
+                                              rows="3"
+                                              placeholder="Alguna indicación especial para tu pedido"></textarea>
 
                                 </div>
 
@@ -364,8 +482,39 @@
                         </h2>
 
 
-                        <!-- JavaScript colocará aquí los productos -->
+                        <!-- Productos -->
                         <div id="resumenCarrito"></div>
+
+
+                        <hr>
+
+
+                        <!-- Subtotal -->
+                        <div class="d-flex justify-content-between mb-2">
+
+                            <span>
+                                Subtotal
+                            </span>
+
+                            <span id="subtotalPedido">
+                                $0.00
+                            </span>
+
+                        </div>
+
+
+                        <!-- Envío -->
+                        <div class="d-flex justify-content-between mb-3">
+
+                            <span>
+                                Envío
+                            </span>
+
+                            <span id="envioPedido">
+                                $0.00
+                            </span>
+
+                        </div>
 
 
                         <hr>
@@ -427,12 +576,14 @@
 
                 </a>
 
+
                 <a href="#"
                    class="text-decoration-none me-3">
 
                     Facebook
 
                 </a>
+
 
                 <a href="mailto:contacto@lamigaja.com"
                    class="text-decoration-none">
@@ -457,4 +608,3 @@
 </body>
 
 </html>
-
