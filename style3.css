@@ -1,4 +1,8 @@
-css id="8axj4k"
+/* =====================================================
+   LA MIGAJA - HOJA 3: PEDIDOS
+   ===================================================== */
+
+
 /* =====================================================
    ESTILOS GENERALES
    ===================================================== */
@@ -9,12 +13,21 @@ body {
 
     color: #3d2b24;
 
+    font-family: Arial, Helvetica, sans-serif;
+
 }
 
 
 /* =====================================================
    NAVEGACIÓN
    ===================================================== */
+
+.navbar {
+
+    background-color: #fff8ef !important;
+
+}
+
 
 .navbar-brand strong {
 
@@ -25,7 +38,9 @@ body {
 
 .nav-link {
 
-    color: #5a4034;
+    color: #5a4034 !important;
+
+    font-weight: 600;
 
 }
 
@@ -33,20 +48,42 @@ body {
 .nav-link:hover,
 .nav-link.active {
 
-    color: #9a5a36;
+    color: #9a5a36 !important;
 
 }
 
 
 /* =====================================================
-   TÍTULOS
+   ENCABEZADO
    ===================================================== */
+
+main > section:first-child {
+
+    background: linear-gradient(
+        135deg,
+        #fff8ef,
+        #f7eadc
+    );
+
+    padding: 2rem;
+
+    border-radius: 20px;
+
+}
+
 
 h1,
 h2,
 h3 {
 
     color: #6f3d25;
+
+}
+
+
+h1 {
+
+    font-weight: 700;
 
 }
 
@@ -59,7 +96,149 @@ h3 {
 
     border: none;
 
-    border-radius: 16px;
+    border-radius: 18px;
+
+}
+
+
+.card-body {
+
+    border-radius: 18px;
+
+}
+
+
+/* =====================================================
+   FORMULARIO
+   ===================================================== */
+
+.form-label {
+
+    font-weight: 600;
+
+    color: #5a4034;
+
+}
+
+
+.form-control,
+.form-select {
+
+    border-radius: 10px;
+
+    border-color: #dec9b8;
+
+}
+
+
+.form-control:focus,
+.form-select:focus {
+
+    border-color: #b88b70;
+
+    box-shadow:
+        0 0 0 0.2rem
+        rgba(139, 78, 47, 0.15);
+
+}
+
+
+/* =====================================================
+   OPCIONES DE ENTREGA Y PAGO
+   ===================================================== */
+
+.form-check {
+
+    margin-bottom: 0.5rem;
+
+}
+
+
+.form-check-label {
+
+    cursor: pointer;
+
+}
+
+
+.form-text {
+
+    color: #806d63;
+
+}
+
+
+/* =====================================================
+   RESUMEN DEL PEDIDO
+   ===================================================== */
+
+#resumenCarrito {
+
+    max-height: 520px;
+
+    overflow-y: auto;
+
+    padding-right: 5px;
+
+}
+
+
+/* Cada producto */
+
+.producto-resumen {
+
+    padding: 10px 0;
+
+}
+
+
+/* Imagen del producto */
+
+.imagen-producto-pedido {
+
+    width: 75px;
+
+    height: 75px;
+
+    object-fit: cover;
+
+    border-radius: 12px;
+
+    flex-shrink: 0;
+
+    background-color: #fff8ef;
+
+    border: 1px solid #ead8c6;
+
+}
+
+
+/* Nombre */
+
+.producto-resumen h3 {
+
+    color: #6f3d25;
+
+    font-weight: 700;
+
+}
+
+
+/* =====================================================
+   RESUMEN DE PRECIOS
+   ===================================================== */
+
+#subtotalPedido,
+#envioPedido {
+
+    color: #6f3d25;
+
+}
+
+
+#totalPedido {
+
+    color: #8b4e2f;
 
 }
 
@@ -101,29 +280,18 @@ h3 {
 
     border-color: #8b4e2f;
 
+    color: white;
+
 }
 
 
 /* =====================================================
-   FORMULARIO
+   MENSAJE DE CONFIRMACIÓN
    ===================================================== */
 
-.form-control,
-.form-select {
+#mensajePedido {
 
-    border-radius: 10px;
-
-}
-
-
-.form-control:focus,
-.form-select:focus {
-
-    border-color: #b88b70;
-
-    box-shadow:
-        0 0 0 0.2rem
-        rgba(139, 78, 47, 0.15);
+    border-radius: 12px;
 
 }
 
@@ -131,6 +299,13 @@ h3 {
 /* =====================================================
    FOOTER
    ===================================================== */
+
+footer {
+
+    background-color: #fff8ef;
+
+}
+
 
 footer a {
 
@@ -159,35 +334,33 @@ footer a:hover {
     }
 
 
+    main > section:first-child {
+
+        padding: 1.5rem;
+
+    }
+
+
     .card-body {
 
         padding: 1.25rem !important;
 
     }
 
-}
 
-/* Estilos globales para botones y logo */
-.logo {
-    width: 40px;
-    height: 40px;
-    object-fit: contain;
-}
+    .imagen-producto-pedido {
 
-.btn-primary {
-    background-color: #d97706 !important;
-    border-color: #b45309 !important;
-    color: #ffffff !important;
-    font-weight: 600;
-}
+        width: 60px;
 
-.btn-primary:hover {
-    background-color: #b45309 !important;
-    border-color: #78350f !important;
-    color: #ffffff !important;
-}
+        height: 60px;
 
-.product-image {
-    height: 200px;
-    object-fit: cover;
+    }
+
+
+    #resumenCarrito {
+
+        max-height: none;
+
+    }
+
 }
